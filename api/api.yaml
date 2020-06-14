@@ -1,0 +1,360 @@
+openapi: 3.0.1
+info:
+  version: 0.0.1
+  title: API explorer
+  description: api para la plataforma de eCommerce Tecal
+  termsOfService: ''
+  contact:
+    name: Alejandro Valladares
+    email: alejo.valladares14@gmail.com
+    url: aunno.com
+  license:
+    name: Apache 2.0
+    url: 'https://www.apache.org/licenses/LICENSE-2.0.html'
+servers:
+  - url: 'http://localhost:8080/docs/'
+tags:
+  - name: Users
+paths:
+  /users:
+    get:
+      tags:
+        - Users
+      description: Returns all users from the system that the user has access to
+      operationId: getUsers
+      responses:
+        '200':
+          description: A list of users.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+      x-swagger-router-controller: 'Users' 
+      # SUPER IMPORTANT INSTRUCTION ^^^, I spent ~10 hours trying to figure things out until I came to that instruction.
+      # It helps identify in which controller the operationId in certain method is located.
+      # https://medium.com/@hmajid2301/implementing-a-simple-rest-api-using-openapi-flask-connexions-1bdd01ca916
+    post:
+      tags:
+        - Users
+      description: Add user instance to data source
+      operationId: createUser
+      responses:
+        '200':
+          description: Create a user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+      parameters:
+        - in: query
+          name: data
+          required: true
+          schema:
+            type: object
+            properties:
+              firstName:
+                type: string
+              middleName:
+                type: string
+              lastName:
+                type: string
+              gender:
+                type: string
+              dob:
+                type: string
+                format: date
+              email:
+                type: string
+                format: email
+              address:
+                type: string
+              cellphone:
+                type: string
+              cityId:
+                type: number
+              stateId:
+                type: number
+              countryId:
+                type: string
+              roleId:
+                type: number
+          style: form
+          explode: true
+      x-swagger-router-controller: 'Users' 
+  '/users/{id}':
+    get:
+      tags:
+        - Users
+      description: Returns a user by id
+      operationId: getUserById
+      responses:
+        '200':
+          description: A user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+      parameters:
+        - $ref: '#/components/parameters/user_idParam'
+      x-swagger-router-controller: 'Users'
+    put:
+      tags:
+        - Users
+      description: Updates a user instance by id
+      operationId: updateUserById
+      responses:
+        '200':
+          description: A user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+      parameters:
+        - $ref: '#/components/parameters/user_idParam'
+        - $ref: '#/components/parameters/user_firstNameParam'
+        - $ref: '#/components/parameters/user_middleNameParam'
+        - $ref: '#/components/parameters/user_lastNameParam'
+        - $ref: '#/components/parameters/user_genderParam'
+        - $ref: '#/components/parameters/user_dobParam'
+        - $ref: '#/components/parameters/user_emailParam'
+        - $ref: '#/components/parameters/user_addressParam'
+        - $ref: '#/components/parameters/user_cellphoneParam'
+        - $ref: '#/components/parameters/user_cityIdParam'
+        - $ref: '#/components/parameters/user_stateIdParam'
+        - $ref: '#/components/parameters/user_countryIdParam'
+      x-swagger-router-controller: 'Users'
+    delete:
+      tags:
+        - Users
+      description: Deletes a user with a specified id
+      operationId: deleteUserById
+      responses:
+        '200':
+          description: User deleted successfully.
+      parameters:
+        - $ref: '#/components/parameters/user_idParam'
+      x-swagger-router-controller: 'Users'
+  '/users/{id}/exists':
+    get:
+        tags:
+          - Users
+        description: Returns true if specified user with id exists
+        operationId: doesUserExists
+        responses:
+          '200':
+            description: A user.
+            content:
+              application/json:
+                schema:
+                  properties:
+                    exists:
+                      type: boolean
+                      example: false
+        parameters:
+          - $ref: '#/components/parameters/user_idParam'
+        x-swagger-router-controller: 'Users'
+  '/users/count':
+    get:
+      tags:
+        - Users
+      description: Returns the number of instances that matches specified where clause
+      operationId: getUsersCount
+      responses:
+        '200':
+          description: A list of users.
+      parameters:
+        - $ref: '#/components/parameters/user_firstNameParam'
+        - $ref: '#/components/parameters/user_middleNameParam'
+        - $ref: '#/components/parameters/user_lastNameParam'
+        - $ref: '#/components/parameters/user_genderParam'
+        - $ref: '#/components/parameters/user_dobParam'
+        - $ref: '#/components/parameters/user_emailParam'
+        - $ref: '#/components/parameters/user_addressParam'
+        - $ref: '#/components/parameters/user_cellphoneParam'
+        - $ref: '#/components/parameters/user_cityIdParam'
+        - $ref: '#/components/parameters/user_stateIdParam'
+        - $ref: '#/components/parameters/user_countryIdParam'
+      x-swagger-router-controller: 'Users' 
+  '/users/find':
+    get:
+      tags:
+        - Users
+      description: Returns the first user instance that matches specified filter
+      operationId: findUsers
+      responses:
+        '200':
+          description: A list of users.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+      parameters:
+        - in: query
+          name: id
+          description: user's id
+          schema:
+            type: number
+        - $ref: '#/components/parameters/user_firstNameParam'
+        - $ref: '#/components/parameters/user_middleNameParam'
+        - $ref: '#/components/parameters/user_lastNameParam'
+        - $ref: '#/components/parameters/user_genderParam'
+        - $ref: '#/components/parameters/user_dobParam'
+        - $ref: '#/components/parameters/user_emailParam'
+        - $ref: '#/components/parameters/user_addressParam'
+        - $ref: '#/components/parameters/user_cellphoneParam'
+        - $ref: '#/components/parameters/user_cityIdParam'
+        - $ref: '#/components/parameters/user_stateIdParam'
+        - $ref: '#/components/parameters/user_countryIdParam'
+      x-swagger-router-controller: 'Users' 
+components:
+  schemas:
+    User:
+      type: object
+      required:
+        - id
+        - firstName
+        - lastName
+        - gender
+        - age
+        - email
+        - cellphone
+        - createdAt
+        - modifiedAt
+      properties:
+        id:
+          type: number
+          example: 23
+        firstName:
+          type: string
+          example: Alicia
+        middleName:
+          type: string
+          example: M
+        lastName:
+          type: string
+          example: Keys
+        gender:
+          type: string
+          example: Female
+        dob:
+          type: string
+          format: date
+          example: '2000-08-29'
+        email:
+          type: string
+          example: example@email.com
+        verfied:
+          type: boolean
+          example: true
+        address:
+          type: string
+          example: 21st Willow Street
+        cellphone:
+          type: string
+          description: '88014794'
+        createdAt:
+          type: string
+          format: date-time
+          example: '2016-08-29T09:12:33.001Z'
+        modifiedAt:
+          type: string
+          format: date-time
+          example: '2016-08-29T09:12:33.001Z'
+        cityId:
+          type: number
+          example: 1804
+        stateId:
+          type: number
+          example: 18
+        countryId:
+          type: string
+          example: 1
+        roleId:
+          type: number
+          example: 1
+  parameters:
+    user_idParam:
+      in: path
+      name: id
+      description: user's id
+      required: true
+      schema:
+        type: number
+    user_firstNameParam:
+      in: query
+      name: firstName
+      description: user's first name
+      schema:
+        type: string
+    user_middleNameParam:
+      in: query
+      name: middleName
+      description: user's middle name
+      schema:
+        type: string
+    user_lastNameParam:
+      in: query
+      name: lastName
+      description: user's last name
+      schema:
+        type: string
+    user_genderParam:
+      in: query
+      name: gender
+      description: user's gender
+      schema:
+        type: string
+    user_dobParam:
+      in: query
+      name: dob
+      description: user's date of birth
+      schema:
+        type: string
+        format: date
+    user_emailParam:
+      in: query
+      name: email
+      description: user's email
+      schema:
+        type: string
+        format: email
+    user_addressParam:
+      in: query
+      name: address
+      description: user's street address
+      schema:
+        type: string
+    user_cellphoneParam:
+      in: query
+      name: cellphone
+      description: user's cellphone
+      schema:
+        type: string
+    user_cityIdParam:
+      in: query
+      name: cityId
+      description: user's current city
+      schema:
+        type: number
+    user_stateIdParam:
+      in: query
+      name: stateId
+      description: user's current state
+      schema:
+        type: number
+    user_countryIdParam:
+      in: query
+      name: countryId
+      description: user's current country
+      schema:
+        type: string
+    user_roleIdParam:
+      in: query
+      name: roleId
+      description: user's role
+      schema:
+        type: number
