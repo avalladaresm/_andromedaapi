@@ -1,0 +1,27 @@
+{
+  "name": "api-explorer",
+  "version": "0.0.1",
+  "description": "api para la plataforma de eCommerce Tecal",
+  "main": "index.js",
+  "scripts": {
+    "prestart": "npm install",
+    "start": "node index.js",
+    "dev": "nodemon --watch ./ --watch ./api --watch ./controllers --watch ./service index.js"
+  },
+  "keywords": [
+    "swagger"
+  ],
+  "license": "Unlicense",
+  "private": true,
+  "dependencies": {
+    "connect": "^3.2.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "js-yaml": "^3.3.0",
+    "lodash": "^4.17.15",
+    "mssql": "^6.2.0",
+    "nodemon": "^2.0.4",
+    "oas3-tools": "^2.0.2",
+    "swagger-ui": "^3.26.2"
+  }
+}
