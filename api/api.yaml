@@ -54,6 +54,10 @@ paths:
           schema:
             type: object
             properties:
+              userName:
+                type: string
+              password:
+                type: string
               firstName:
                 type: string
               middleName:
@@ -170,7 +174,6 @@ paths:
         - $ref: '#/components/parameters/user_lastNameParam'
         - $ref: '#/components/parameters/user_genderParam'
         - $ref: '#/components/parameters/user_dobParam'
-        - $ref: '#/components/parameters/user_emailParam'
         - $ref: '#/components/parameters/user_addressParam'
         - $ref: '#/components/parameters/user_cellphoneParam'
         - $ref: '#/components/parameters/user_cityIdParam'
@@ -216,6 +219,8 @@ components:
       type: object
       required:
         - id
+        - userName
+        - password
         - firstName
         - lastName
         - gender
@@ -223,11 +228,17 @@ components:
         - email
         - cellphone
         - createdAt
-        - modifiedAt
+        - updatedAt
       properties:
         id:
           type: number
           example: 23
+        userName:
+          type: string
+          example: aliciak10
+        password:
+          type: string
+          example: password123
         firstName:
           type: string
           example: Alicia
@@ -260,7 +271,7 @@ components:
           type: string
           format: date-time
           example: '2016-08-29T09:12:33.001Z'
-        modifiedAt:
+        updatedAt:
           type: string
           format: date-time
           example: '2016-08-29T09:12:33.001Z'
@@ -284,6 +295,18 @@ components:
       required: true
       schema:
         type: number
+    user_userNameParam:
+      in: query
+      name: userName
+      description: user's username
+      schema:
+        type: string
+    user_passwordParam:
+      in: query
+      name: password
+      description: user's password
+      schema:
+        type: string
     user_firstNameParam:
       in: query
       name: firstName
