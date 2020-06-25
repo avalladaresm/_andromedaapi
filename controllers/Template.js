@@ -1,118 +1,36 @@
-'use strict';
+'use strict'
 
-var utils = require('../utils/writer.js');
-var Template = require('../service/TemplateService');
-var dbConfig = require('../dbConfig');
-var sql = require('mssql');
+// var dbConfig = require('../config/db')
+var { /* Sequelize, */ DataTypes } = require('sequelize')
 
-module.exports.getTableName = function getTableName(req, res, next) {
-	Template.getTableName()
-		.then(() => {
-			var dbConn = new sql.ConnectionPool(dbConfig);
-			dbConn.connect().then(() => {}).catch((err) => {
-				console.log('Error on connection', err);
-			});
-		})
-		.catch(function(response, err) {
-			console.log('Error getting endpoint', response, err);
-			utils.writeJson(res, response);
-		});
-};
+DataTypes.DATE.prototype._stringify = function (date, options) {
+  date = this._applyTimezone(date, options)
+  return date.format('YYYY-MM-DD HH:mm:ss.SSS')
+}.bind(DataTypes.DATE.prototype)
 
-module.exports.createTableName = function createTableName(req, res, next) {
-	Template.createTableName()
-		.then(() => {
-			var dbConn = new sql.ConnectionPool(dbConfig);
-			dbConn.connect().then(() => {}).catch((err) => {
-				console.log('Error on connection', err);
-			});
-		})
-		.catch(function(response, err) {
-			console.log('Error getting endpoint', response, err);
-			utils.writeJson(res, response);
-		});
-};
+/* const connection = new Sequelize(
+  dbConfig.options.database,
+  dbConfig.authentication.options.userName,
+  dbConfig.authentication.options.password,
+  {
+    host: dbConfig.server,
+    dialect: 'mssql',
+    logging: console.log
+  }
+) */
 
-module.exports.getTableNameById = function getTableNameById(req, res, next) {
-	Template.getTableNameById()
-		.then(() => {
-			var dbConn = new sql.ConnectionPool(dbConfig);
-			dbConn.connect().then(() => {}).catch((err) => {
-				console.log('Error on connection', err);
-			});
-		})
-		.catch(function(response, err) {
-			console.log('Error getting endpoint', response, err);
-			utils.writeJson(res, response);
-		});
-};
+module.exports.getTableName = function getTableName (req, res) {}
 
-module.exports.updateTableNameById = function updateTableNameById(req, res, next) {
-	Template.updateTableNameById()
-		.then(() => {
-			var dbConn = new sql.ConnectionPool(dbConfig);
-			dbConn.connect().then(() => {}).catch((err) => {
-				console.log('Error on connection', err);
-			});
-		})
-		.catch(function(response, err) {
-			console.log('Error getting endpoint', response, err);
-			utils.writeJson(res, response);
-		});
-};
+module.exports.createTableName = function createTableName (req, res) {}
 
-module.exports.deleteTableNameById = function deleteTableNameById(req, res, next) {
-	Template.deleteTableNameById()
-		.then(() => {
-			var dbConn = new sql.ConnectionPool(dbConfig);
-			dbConn.connect().then(() => {}).catch((err) => {
-				console.log('Error on connection', err);
-			});
-		})
-		.catch(function(response, err) {
-			console.log('Error getting endpoint', response, err);
-			utils.writeJson(res, response);
-		});
-};
+module.exports.getTableNameById = function getTableNameById (req, res) {}
 
-module.exports.doesTableNameExists = function doesTableNameExists(req, res, next) {
-	Template.doesTableNameExists(userId)
-		.then(() => {
-			var dbConn = new sql.ConnectionPool(dbConfig);
-			dbConn.connect().then(() => {}).catch((err) => {
-				console.log('Error on connection:\n', err);
-			});
-		})
-		.catch(function(response, err) {
-			console.log('Error getting endpoint', response, err);
-			utils.writeJson(res, response);
-		});
-};
+module.exports.updateTableNameById = function updateTableNameById (req, res) {}
 
-module.exports.getTableNameCount = function getTableNameCount(req, res, next) {
-	Template.getTableNameCount()
-		.then(() => {
-			var dbConn = new sql.ConnectionPool(dbConfig);
-			dbConn.connect().then(() => {}).catch((err) => {
-				console.log('Error on connection', err);
-			});
-		})
-		.catch(function(response, err) {
-			console.log('Error getting endpoint', response, err);
-			utils.writeJson(res, response);
-		});
-};
+module.exports.deleteTableNameById = function deleteTableNameById (req, res) {}
 
-module.exports.findTableName = function findTableName(req, res, next) {
-	Template.findTableName()
-		.then(() => {
-			var dbConn = new sql.ConnectionPool(dbConfig);
-			dbConn.connect().then(() => {}).catch((err) => {
-				console.log('Error on connection', err);
-			});
-		})
-		.catch(function(response, err) {
-			console.log('Error getting endpoint', response, err);
-			utils.writeJson(res, response);
-		});
-};
+module.exports.doesTableNameExists = function doesTableNameExists (req, res) {}
+
+module.exports.getTableNameCount = function getTableNameCount (req, res) {}
+
+module.exports.findTableName = function findTableName (req, res) {}
