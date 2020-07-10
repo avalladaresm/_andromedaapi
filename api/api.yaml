@@ -180,7 +180,7 @@ paths:
         - $ref: '#/components/parameters/user_stateIdParam'
         - $ref: '#/components/parameters/user_countryIdParam'
       x-swagger-router-controller: 'Users' 
-  '/users/find':
+  '/users/find/{search}':
     get:
       tags:
         - Users
@@ -196,7 +196,13 @@ paths:
                 items:
                   $ref: '#/components/schemas/User'
       parameters:
-        - in: query
+        - in: path
+          name: search
+          description: custom search text
+          required: true
+          schema:
+            type: string
+      x-swagger-router-controller: 'Users' 
           name: id
           description: user's id
           schema:
