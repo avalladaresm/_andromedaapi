@@ -32,9 +32,11 @@ const connection = new Sequelize(
 
 module.exports.getUsers = function getUsers (req, res, next) {
   const users = []
-  UsersModel(connection).findAll().then((data) => {
+  connection.query('getAllUsers', {
+    type: QueryTypes.SELECT
+  }).then((data) => {
     data.map((u) => {
-      users.push(u.dataValues)
+      users.push(u)
     })
     res.send(users)
   }).catch((e) => {
@@ -68,9 +70,13 @@ module.exports.createUser = function createUser (req, res, next) {
       res.status(200).send('User created successfully.')
     }).catch((e) => {
       console.log('Error creating user:\n', e)
+      if(e.errors[0].type === 'notNull Violation')
+        res.status(400).send({messagee: "Error creating user, check required values!"})
+      else res.status(400).send({messagee: "Error creating user!"})
     })
   }).catch((e) => {
     console.log('Error hashing password:\n', e)
+    res.status(400).send({message: "Password not provided!"})
   })
 }
 
@@ -139,7 +145,7 @@ module.exports.doesUserExists = function doesUserExists (req, res, next) {
     else res.send({ exists: false })
   }).catch((e) => {
     console.log('Error:\n', e)
-    res.status(400).send()
+    res.status(400).send(e)
   })
 }
 
@@ -156,16 +162,18 @@ module.exports.getUsersCount = function getUsersCount (req, res, next) {
 }
 
 module.exports.findUsers = function findUsers (req, res, next) {
-  var params = req.openapi.swaggerParameters[0].query
-  UsersModel(connection).findAll({
-    where: params
+  var searchText = req.openapi.pathParams.search
+  const users = []
+  connection.query('customFindUser :searchText', {
+    replacements: { searchText: searchText },
+    type: QueryTypes.SELECT
   }).then((data) => {
-    if (!data.length) {
-      res.send({ message: 'No matching results.', results: 0 })
-    }
-    res.send(data)
+    data.map((u) => {
+      users.push(u)
+    })
+    res.send(users)
   }).catch((e) => {
     console.log('Error:\n', e)
-    res.status(400).send()
+    res.status(400).send(e.message)
   })
 }
