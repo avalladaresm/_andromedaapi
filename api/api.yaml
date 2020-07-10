@@ -15,6 +15,7 @@ servers:
   - url: 'http://localhost:8080/docs/'
 tags:
   - name: Users
+  - name: Cities
 paths:
   /users:
     get:
@@ -203,8 +204,45 @@ paths:
           schema:
             type: string
       x-swagger-router-controller: 'Users' 
+  /cities:
+    get:
+      tags:
+        - Cities
+      description: Returns all cities
+      operationId: getCities
+      responses:
+        '200':
+          description: A list of cities.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/City'
+      x-swagger-router-controller: 'Cities' 
+  /cities/{id}:
+    get:
+      tags:
+        - Cities
+      description: Returns a city by id
+      operationId: getCityById
+      responses:
+        '200':
+          description: A city.
+          content:
+            application/json:
+              schema:
+                  type: object
+                  required:
+                    - id
+      parameters:
+        - in: path
           name: id
-          description: user's id
+          description: city's id
+          required: true
+          schema:
+            type: number
+      x-swagger-router-controller: 'Cities' 
           schema:
             type: number
         - $ref: '#/components/parameters/user_firstNameParam'
@@ -293,6 +331,8 @@ components:
         roleId:
           type: number
           example: 1
+    City:
+      type: object
   parameters:
     user_idParam:
       in: path
