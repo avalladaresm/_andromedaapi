@@ -244,7 +244,31 @@ paths:
           required: true
           schema:
             type: number
-      x-swagger-router-controller: 'Cities' 
+      x-swagger-router-controller: 'Cities'
+  '/cities/{id}/exists':
+    get:
+      tags:
+        - Cities
+      description: Returns true if specified city with id exists
+      operationId: doesCityExists
+      responses:
+        '200':
+          description: A city.
+          content:
+            application/json:
+              schema:
+                properties:
+                  exists:
+                    type: boolean
+                    example: false
+      parameters:
+        - in: path
+          name: id
+          description: city's id
+          required: true
+          schema:
+            type: number
+      x-swagger-router-controller: 'Cities'
   /states:
     get:
       tags:
@@ -307,104 +331,15 @@ paths:
           schema:
             type: number
       x-swagger-router-controller: 'States' 
-  /countries:
+  '/states/{id}/exists':
     get:
       tags:
-        - Countries
-      description: Returns all countries
-      operationId: getCountries
+        - States
+      description: Returns true if specified state with id exists
+      operationId: doesStateExists
       responses:
         '200':
-          description: A list of countries.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Country'
-      x-swagger-router-controller: 'Countries' 
-  /countries/{id}:
-    get:
-      tags:
-        - Countries
-      description: Returns a country by id
-      operationId: getCountryById
-      responses:
-        '200':
-          description: A country.
-          content:
-            application/json:
-              schema:
-                  type: object
-                  required:
-                    - id
-      parameters:
-        - in: path
-          name: id
-          description: country's id
-          required: true
-          schema:
-            type: string
-      x-swagger-router-controller: 'Countries' 
-  '/countries/{countryId}/states':
-    get:
-      tags:
-        - Countries
-      description: Returns all states by countryId
-      operationId: getStatesByCountryId
-      responses:
-        '200':
-          description: A list of states.
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - id
-      parameters:
-        - in: path
-          name: countryId
-          description: country's id
-          required: true
-          schema:
-            type: string
-      x-swagger-router-controller: 'Countries'
-  '/countries/{countryId}/states/{stateId}/cities':
-    get:
-      tags:
-        - Countries
-      description: Returns all states with its cities by countryId
-      operationId: getCitiesByStateIdByCountryId
-      responses:
-        '200':
-          description: A list of states with its cities.
-          content:
-            application/json:
-              schema:
-                type: object
-      parameters:
-        - in: path
-          name: countryId
-          description: country's id
-          required: true
-          schema:
-            type: string
-        - in: path
-          name: stateId
-          description: state's id
-          required: true
-          schema:
-            type: number
-      x-swagger-router-controller: 'Countries'
-  '/countries/{id}/exists':
-    get:
-      tags:
-        - Countries
-      description: Returns true if specified country with id exists
-      operationId: doesCountryExists
-      responses:
-        '200':
-          description: A country.
+          description: A state.
           content:
             application/json:
               schema:
@@ -415,11 +350,11 @@ paths:
       parameters:
         - in: path
           name: id
-          description: country's id
+          description: state's id
           required: true
           schema:
-            type: string
-      x-swagger-router-controller: 'Countries'
+            type: number
+      x-swagger-router-controller: 'States'
 components:
   schemas:
     User:
