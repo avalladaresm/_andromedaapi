@@ -358,12 +358,63 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/State'
+                type: object
+                required:
+                  - id
       parameters:
         - in: path
           name: countryId
+          description: country's id
+          required: true
+          schema:
+            type: string
+      x-swagger-router-controller: 'Countries'
+  '/countries/{countryId}/states/{stateId}/cities':
+    get:
+      tags:
+        - Countries
+      description: Returns all states with its cities by countryId
+      operationId: getCitiesByStateIdByCountryId
+      responses:
+        '200':
+          description: A list of states with its cities.
+          content:
+            application/json:
+              schema:
+                type: object
+      parameters:
+        - in: path
+          name: countryId
+          description: country's id
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: stateId
+          description: state's id
+          required: true
+          schema:
+            type: number
+      x-swagger-router-controller: 'Countries'
+  '/countries/{id}/exists':
+    get:
+      tags:
+        - Countries
+      description: Returns true if specified country with id exists
+      operationId: doesCountryExists
+      responses:
+        '200':
+          description: A country.
+          content:
+            application/json:
+              schema:
+                properties:
+                  exists:
+                    type: boolean
+                    example: false
+      parameters:
+        - in: path
+          name: id
           description: country's id
           required: true
           schema:
