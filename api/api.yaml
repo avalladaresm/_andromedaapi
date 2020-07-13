@@ -244,7 +244,31 @@ paths:
           required: true
           schema:
             type: number
-      x-swagger-router-controller: 'Cities' 
+      x-swagger-router-controller: 'Cities'
+  '/cities/{id}/exists':
+    get:
+      tags:
+        - Cities
+      description: Returns true if specified city with id exists
+      operationId: doesCityExists
+      responses:
+        '200':
+          description: A city.
+          content:
+            application/json:
+              schema:
+                properties:
+                  exists:
+                    type: boolean
+                    example: false
+      parameters:
+        - in: path
+          name: id
+          description: city's id
+          required: true
+          schema:
+            type: number
+      x-swagger-router-controller: 'Cities'
   /states:
     get:
       tags:
