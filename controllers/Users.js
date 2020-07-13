@@ -71,12 +71,12 @@ module.exports.createUser = function createUser (req, res, next) {
     }).catch((e) => {
       console.log('Error creating user:\n', e)
       if(e.errors[0].type === 'notNull Violation')
-        res.status(400).send({messagee: "Error creating user, check required values!"})
-      else res.status(400).send({messagee: "Error creating user!"})
+        res.status(400).send({customErrorMessage: "Error creating user, check required values!"})
+      else res.status(400).send({customErrorMessage: "Error creating user!"})
     })
   }).catch((e) => {
     console.log('Error hashing password:\n', e)
-    res.status(400).send({message: "Password not provided!"})
+    res.status(400).send({customErrorMessage: "Password not provided!"})
   })
 }
 
