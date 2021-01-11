@@ -11,6 +11,7 @@
     "typeorm": "tsed typeorm"
   },
   "dependencies": {
+    "@sendgrid/mail": "^7.4.1",
     "@tsed/ajv": "6.0.2",
     "@tsed/common": "6.0.2",
     "@tsed/core": "6.0.2",

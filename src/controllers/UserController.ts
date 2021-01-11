@@ -1,22 +1,21 @@
-import {BodyParams, Controller, Delete, Get, Patch, PathParams, Post, Put, QueryParams} from '@tsed/common';
+import { BodyParams, Controller, Delete, Get, Patch, PathParams, Post, Put, QueryParams } from '@tsed/common';
 import { NotFound } from '@tsed/exceptions';
 import { Returns } from '@tsed/schema';
 import { DeleteResult, InsertResult, UpdateResult } from 'typeorm';
-import {Users, UsersDataToUpdate} from '../entity/UsersEntity';
-import {UsersService} from '../services/UserService';
+import { Users, UsersDataToUpdate } from '../entity/UsersEntity';
+import { UsersService } from '../services/UserService';
 
 @Controller('/users')
 export class UserController {
-  constructor(private usersService: UsersService) {}
+  constructor(private usersService: UsersService) { }
 
   @Get('/')
   @Returns(200, Array).Of(Users)
   async getAllUsers(): Promise<Users[]> {
     const users = await this.usersService.getAllUsers()
-    console.log('user',users)
     return users
   }
-  
+
   @Get('/:id')
   @Returns(200, Object).Of(Users).Description('A user')
   @Returns(404, NotFound).Of(Users).Description('User not found')
@@ -47,7 +46,7 @@ export class UserController {
 
   @Post('/')
   async createUser(@BodyParams('data') data: Users): Promise<InsertResult> {
-    
+
     const res = await this.usersService.createUser(data)
     return res
   }
