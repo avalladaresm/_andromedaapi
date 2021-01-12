@@ -1,4 +1,4 @@
-import { BodyParams, Controller, Get, HeaderParams, Post, QueryParams } from '@tsed/common';
+import { BodyParams, Context, Controller, Get, HeaderParams, PlatformResponse, Post, QueryParams, Redirect } from '@tsed/common';
 import { Account } from '../models/Account';
 import { VerifiedAccount } from '../models/VerifiedAccount';
 import { AuthService } from '../services/AuthService';
@@ -17,16 +17,18 @@ export class AuthController {
   @Get('/verify')
   async verify(
     @QueryParams('id') id: number,
-    @QueryParams('accessToken') accessToken: string
-  ): Promise<VerifiedAccount> {
+    @QueryParams('accessToken') accessToken: string,
+    @Context() ctx: Context
+  ): Promise<PlatformResponse | VerifiedAccount> {
     const r: VerifiedAccount = await this.authService.verify(id, accessToken)
+    if(ctx.response.statusCode === 200)
+        return ctx.response.redirect(302, 'http://localhost:8000/auth/login')
     return r
   }
 
   @Post('/signup')
   async signup(@BodyParams('data') data: Account) {
     const d = await this.authService.signup(data)
-    console.log('d', d)
     return d
   }
 

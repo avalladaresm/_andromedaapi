@@ -1,5 +1,5 @@
 import { Service } from '@tsed/common';
-import { BadRequest, NotFound, UnprocessableEntity } from '@tsed/exceptions';
+import { BadRequest, NotFound, Unauthorized, UnprocessableEntity } from '@tsed/exceptions';
 import { TypeORMService } from '@tsed/typeorm';
 import { response } from 'express';
 import { Connection } from 'typeorm';
@@ -91,8 +91,12 @@ export class AuthService {
       const inserted = await this.connection.manager.findOne(Account, { where: { username: account[0].username } })
 
       const verificationToken = jwt.sign({ id: inserted?.id }, process.env.MY_SUPER_SECRET_VERIFICATION, {
-        expiresIn: 86400 // 24 hours
+        expiresIn: 1800 // 30 min
       });
+
+      const decodedToken = jwt.verify(verificationToken, process.env.MY_SUPER_SECRET_VERIFICATION);
+      const expDate = new Date(decodedToken.exp * 1000)
+      const createVerificationDetails = await this.connection.query('EXECUTE AccountVerification_CreateVerificationDetails @0, @1, @2', [decodedToken.id, verificationToken, expDate])
 
       const msg = {
         to: process.env.SENDGRID_RECEIVER,
@@ -118,14 +122,24 @@ export class AuthService {
 
   async verify(id: number, accessToken: string): Promise<VerifiedAccount> {
     try {
+      const getVerificationDetails = await this.connection.query('EXECUTE AccountVerification_GetVerificationDetails @0', [id])
+      if (getVerificationDetails.length === 0) {
+        throw new Unauthorized('Oops. This link already expired!')
+      }
+
       const decoded = jwt.verify(accessToken, process.env.MY_SUPER_SECRET_VERIFICATION);
       const dateNow = new Date().getTime()
       const expiresAt = decoded.exp * 1000
-
-      return dateNow < expiresAt && this.connection.query('EXECUTE Account_VerifyAccount @0', [id])
+      if (id === decoded.id && accessToken === getVerificationDetails[0].accessToken && dateNow < expiresAt) {
+        const hmm = await this.connection.query('EXECUTE Account_VerifyAccount @0', [id])
+        return hmm
+      }
+      else {
+        throw new Unauthorized('Oops. This link is no longer valid!')
+      }
     }
     catch (e) {
-      throw new BadRequest('Something happened...');
+      throw e
     }
   }
 }
