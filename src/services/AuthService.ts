@@ -7,6 +7,7 @@ import { Account } from '../entity/AccountEntity';
 import { Users } from '../entity/UsersEntity';
 import { Account as IAccount } from '../models/Account';
 import { VerifiedAccount } from '../models/VerifiedAccount';
+import { format } from 'date-fns'
 const sgMail = require('@sendgrid/mail')
 var bcrypt = require('bcrypt');
 var jwt = require('jsonwebtoken');
@@ -96,7 +97,10 @@ export class AuthService {
 
       const decodedToken = jwt.verify(verificationToken, process.env.MY_SUPER_SECRET_VERIFICATION);
       const expDate = new Date(decodedToken.exp * 1000)
-      const createVerificationDetails = await this.connection.query('EXECUTE AccountVerification_CreateVerificationDetails @0, @1, @2', [decodedToken.id, verificationToken, expDate])
+      const currentTimezone = format(new Date(), 'xxx') // -08:00, +05:30, +00:00	
+      const createVerificationDetails = await this.connection.query(
+        'EXECUTE AccountVerification_CreateVerificationDetails @0, @1, @2, @3', [decodedToken.id, verificationToken, expDate, currentTimezone]
+      )
 
       const msg = {
         to: process.env.SENDGRID_RECEIVER,
