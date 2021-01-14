@@ -1,11 +1,9 @@
 import { Service } from '@tsed/common';
 import { BadRequest, NotFound, Unauthorized, UnprocessableEntity } from '@tsed/exceptions';
 import { TypeORMService } from '@tsed/typeorm';
-import { response } from 'express';
 import { Connection } from 'typeorm';
 import { Account } from '../entity/AccountEntity';
-import { Users } from '../entity/UsersEntity';
-import { Account as IAccount } from '../models/Account';
+import { AccountLoginData, AccountSignupData } from '../models/Account';
 import { VerifiedAccount } from '../models/VerifiedAccount';
 import { format } from 'date-fns'
 const sgMail = require('@sendgrid/mail')
@@ -34,38 +32,27 @@ export class AuthService {
     return Boolean(Object.values(exists[0])[0])
   }
 
-  async signin(username: string, password: string): Promise<{}> {
-    const exists = await this.doesAccountUsernameExists(username);
-    if (!exists) {
-      throw new NotFound('User not found.');
-    }
-
+  async signin(data: AccountLoginData): Promise<string> {
     try {
-      const user = await this.connection.manager.findOneOrFail(Users, { where: { userName: username } })
-      let passwordIsValid = bcrypt.compareSync(
-        password,
-        user?.password
-      )
+      const account = await this.connection.manager.findOne(Account, { where: { username: data.username } })
+      if (!account) throw new NotFound(`Account ${data.username} not found.`);
 
-      if (!passwordIsValid) {
-        return response.status(401).send({
-          accesstoken: null,
-          message: 'Invalid password!',
-        })
-      }
+      let hashedPassword = bcrypt.compareSync(data.password, account?.password)
+      if (!hashedPassword) throw new Unauthorized(`Invalid password.`)
 
-      var token = jwt.sign({ id: user.id }, process.env.MY_SUPER_SECRET, {
+      var token = jwt.sign({ id: account.id }, process.env.MY_SUPER_SECRET, {
         expiresIn: 86400 // 24 hours
       });
-      const cookieValue = username + '|' + token
+
+      const cookieValue = data.username + '|' + token
       return cookieValue
     }
     catch (e) {
-      throw new NotFound('User not found.');
+      throw e
     }
   }
 
-  async signup(data: IAccount): Promise<void> {
+  async signup(data: AccountSignupData): Promise<void> {
     const usernameExists = await this.doesAccountUsernameExists(data.username);
     if (usernameExists) {
       throw new UnprocessableEntity(`User ${data.username} already exists.`);
