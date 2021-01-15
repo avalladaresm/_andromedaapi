@@ -32,19 +32,31 @@ export class AuthService {
     return Boolean(Object.values(exists[0])[0])
   }
 
+  async getAccountRole(username: string): Promise<string> {
+    try {
+      const role = await this.connection.query('EXECUTE Account_GetAccountRole @0', [username])
+      return role[0].role
+    }
+    catch (e) {
+      throw e
+    }
+  }
+
   async signin(data: AccountLoginData): Promise<string> {
     try {
       const account = await this.connection.manager.findOne(Account, { where: { username: data.username } })
       if (!account) throw new NotFound(`Account ${data.username} not found.`);
 
-      let hashedPassword = bcrypt.compareSync(data.password, account?.password)
+      const hashedPassword = bcrypt.compareSync(data.password, account?.password)
       if (!hashedPassword) throw new Unauthorized(`Invalid password.`)
+
+      const role = await this.connection.query('EXECUTE Account_GetAccountRole @0', [data.username])
 
       var token = jwt.sign({ id: account.id }, process.env.MY_SUPER_SECRET, {
         expiresIn: 86400 // 24 hours
       });
 
-      const cookieValue = data.username + '|' + token
+      const cookieValue = data.username + '|' + token + '|' + role[0].role
       return cookieValue
     }
     catch (e) {
@@ -90,8 +102,8 @@ export class AuthService {
       )
 
       const msg = {
-        to: process.env.SENDGRID_RECEIVER,
-        from: process.env.SENDGRID_SENDER,
+        to: 'alejo.valladares14@gmail.com',
+        from: 'javalladaresm24@hotmail.com',
         subject: 'Verify your account',
         text: `Welcome to Tecal! Now, please verify your account by clicking the following link: http://localhost:3000/auth/verify?id=${inserted?.id}&accessToken=` + verificationToken,
       }
