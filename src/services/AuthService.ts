@@ -51,6 +51,7 @@ export class AuthService {
       if (!hashedPassword) throw new Unauthorized(`Invalid password.`)
 
       const role = await this.connection.query('EXECUTE Account_GetAccountRole @0', [data.username])
+      if (role.length === 0) throw new Unauthorized(`This account has no role. Contact support.`)
 
       var token = jwt.sign({ id: account.id }, process.env.MY_SUPER_SECRET, {
         expiresIn: 86400 // 24 hours
