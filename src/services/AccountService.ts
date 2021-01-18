@@ -22,4 +22,26 @@ export class AccountService {
       throw e
     }
   }
+
+  async getAllPersonAccounts(): Promise<any> {
+    try {
+      const accounts = await this.connection.query('EXECUTE Account_GetAllPersonAccounts')
+      if (accounts.length === 0) throw new NotFound('No accounts found.')
+      return accounts
+    }
+    catch (e) {
+      throw e
+    }
+  }
+
+  async getAllBusinessAccounts(): Promise<any> {
+    try {
+      const accounts = await this.connection.query('EXECUTE Account_GetAllBusinessAccounts')
+      if (accounts.length === 0) throw new NotFound('No accounts found.')
+      return accounts
+    }
+    catch (e) {
+      throw e
+    }
+  }
 }

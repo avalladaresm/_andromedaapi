@@ -15,4 +15,26 @@ export class AccountController {
       throw e
     }
   }
+
+  @Get('/getAllPersonAccounts')
+  async getAllPersonAccounts(): Promise<any> {
+    try {
+      const accounts = await this.accountService.getAllPersonAccounts()
+      return accounts
+    }
+    catch (e) {
+      throw e
+    }
+  }
+
+  @Get('/getAllBusinessAccounts')
+  async getAllBusinessAccounts(): Promise<any> {
+    try {
+      const accounts = await this.accountService.getAllBusinessAccounts()
+      return accounts
+    }
+    catch (e) {
+      throw e
+    }
+  }
 }
