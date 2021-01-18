@@ -5,4 +5,14 @@ import { AccountService } from '../services/AccountService';
 export class AccountController {
   constructor(private accountService: AccountService) { }
 
+  @Get('/getAllAccounts')
+  async verify(): Promise<any> {
+    try {
+      const accounts = await this.accountService.getAllAccounts()
+      return accounts
+    }
+    catch (e) {
+      throw e
+    }
+  }
 }
