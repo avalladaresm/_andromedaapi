@@ -1,4 +1,5 @@
-import { Controller, Get, PathParams } from '@tsed/common';
+import { BodyParams, Controller, Get, Post } from '@tsed/common';
+import { CreateBusinessAccount } from '../models/Account';
 import { AccountService } from '../services/AccountService';
 
 @Controller('/account')
@@ -36,5 +37,11 @@ export class AccountController {
     catch (e) {
       throw e
     }
+  }
+
+  @Post('/createBusinessAccount')
+  async createBusinessAccount(@BodyParams('data') data: CreateBusinessAccount) {
+    const d = await this.accountService.createBusinessAccount(data)
+    return d
   }
 }
