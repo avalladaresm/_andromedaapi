@@ -1,12 +1,17 @@
 import { Property, Required } from '@tsed/schema';
 import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity({ name: 'Countries' })
+@Entity({ name: 'Country' })
 export class Country {
 
   @Property()
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
+
+  @Property()
+  @Column()
+  @Required()
+  iso2: string;
 
   @Property()
   @Column()
@@ -14,7 +19,7 @@ export class Country {
   name: string;
 }
 
-@Entity({ name: 'States' })
+@Entity({ name: 'State' })
 export class State {
 
   @Property()
@@ -33,7 +38,7 @@ export class State {
 }
 
 
-@Entity({ name: 'Cities' })
+@Entity({ name: 'City' })
 export class City {
 
   @Property()
