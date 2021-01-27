@@ -46,3 +46,29 @@ export interface CreatePersonAccount {
   countryId?:       number,
   accountTypeId:    number
 }
+
+export interface CreateEmployeeAccount {
+  name:             string,
+  surname:          string,
+  username:         string,
+  password:         string,
+  gender:           string,
+  dob:              string,
+  position:         string,
+  contractType:     string,
+  salary:           number,
+  hiredOn:          string,
+  email:            string,
+  emailType?:       string,
+  phoneNumber:      string,
+  phoneNumberType?: string,
+  streetAddress1?:  string,
+  streetAddress2?:  string,
+  zip?:             string,
+  coordinates?:     string,
+  cityId?:          number,
+  stateId?:         number,
+  countryId?:       number,
+  roleId:           number,
+  employerId:       number
+}
