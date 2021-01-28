@@ -1,5 +1,6 @@
 import { BodyParams, Context, Controller, Get, HeaderParams, PathParams, PlatformResponse, Post, QueryParams } from '@tsed/common';
 import { AccountLoginData, AccountSignupData } from '../models/Account';
+import { AccountRole } from '../models/AccountRole';
 import { VerifiedAccount } from '../models/VerifiedAccount';
 import { AuthService } from '../services/AuthService';
 
@@ -33,7 +34,7 @@ export class AuthController {
   }
 
   @Get('/:username/account-role')
-  async getAccountRole(@PathParams('username') username: string): Promise<string> {
+  async getAccountRole(@PathParams('username') username: string): Promise<AccountRole> {
     try {
       return await this.authService.getAccountRole(username)
     }

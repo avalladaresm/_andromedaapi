@@ -6,6 +6,7 @@ import { Account } from '../entity/AccountEntity';
 import { AccountLoginData, AccountSignupData } from '../models/Account';
 import { VerifiedAccount } from '../models/VerifiedAccount';
 import { format } from 'date-fns'
+import { AccountRole } from '../models/AccountRole';
 const sgMail = require('@sendgrid/mail')
 var bcrypt = require('bcrypt');
 var jwt = require('jsonwebtoken');
@@ -32,10 +33,10 @@ export class AuthService {
     return Boolean(Object.values(exists[0])[0])
   }
 
-  async getAccountRole(username: string): Promise<string> {
+  async getAccountRole(username: string): Promise<AccountRole> {
     try {
       const role = await this.connection.query('EXECUTE Account_GetAccountRole @0', [username])
-      return role[0].role
+      return {role: role[0].role, accountId: role[0].id}
     }
     catch (e) {
       throw e
