@@ -36,7 +36,7 @@ export class AuthService {
   async getAccountRole(username: string): Promise<AccountRole> {
     try {
       const role = await this.connection.query('EXECUTE Account_GetAccountRole @0', [username])
-      return {role: role[0].role, accountId: role[0].id}
+      return { role: role[0].role, accountId: role[0].id }
     }
     catch (e) {
       throw e
@@ -58,8 +58,8 @@ export class AuthService {
         expiresIn: 86400 // 24 hours
       });
 
-      const cookieValue = data.username + '|' + token + '|' + role[0].role
-      return cookieValue
+      const loginRes = data.username + '|' + token + '|' + role[0].role + '|' + account.id
+      return loginRes
     }
     catch (e) {
       throw e
