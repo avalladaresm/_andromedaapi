@@ -1,5 +1,6 @@
 import { BodyParams, Controller, Get, Post } from '@tsed/common';
 import { CreateBusinessAccount, CreatePersonAccount } from '../models/Account';
+import { CreateBusinessAccount, CreatePersonAccount, PersonAccountResult } from '../models/Account';
 import { AccountService } from '../services/AccountService';
 
 @Controller('/account')
@@ -19,8 +20,9 @@ export class AccountController {
 
   @Get('/getAllPersonAccounts')
   async getAllPersonAccounts(): Promise<any> {
+  async getAllPersonAccounts(): Promise<PersonAccountResult[]> {
     try {
-      const accounts = await this.accountService.getAllPersonAccounts()
+      const accounts: PersonAccountResult[] = await this.accountService.getAllPersonAccounts()
       return accounts
     }
     catch (e) {

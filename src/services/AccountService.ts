@@ -3,7 +3,7 @@ import { BadRequest, NotFound, UnprocessableEntity } from "@tsed/exceptions";
 import { TypeORMService } from "@tsed/typeorm";
 import { Connection } from "typeorm";
 import { Account } from "../entity/AccountEntity";
-import { CreateBusinessAccount, CreatePersonAccount } from "../models/Account";
+import { CreateBusinessAccount, CreatePersonAccount, PersonAccountResult } from "../models/Account";
 import { format } from 'date-fns'
 const sgMail = require('@sendgrid/mail')
 var bcrypt = require('bcrypt');
@@ -41,9 +41,9 @@ export class AccountService {
     }
   }
 
-  async getAllPersonAccounts(): Promise<any> {
+  async getAllPersonAccounts(): Promise<PersonAccountResult[]> {
     try {
-      const accounts = await this.connection.query('EXECUTE Account_GetAllPersonAccounts')
+      const accounts: PersonAccountResult[] = await this.connection.query('EXECUTE Account_GetAllPersonAccounts')
       if (accounts.length === 0) throw new NotFound('No accounts found.')
       return accounts
     }

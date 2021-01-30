@@ -72,3 +72,22 @@ export interface CreateEmployeeAccount {
   roleId:           number,
   employerId:       number
 }
+
+export interface PersonAccountResult {
+  id:                 number
+  username:           string
+  name:               string
+  surname:            string
+  gender:             string
+  email:              string
+  phoneNumber:        string
+  streetAddressLine1: string
+  streetAddressLine2: string
+  zip:                string
+  city:               string
+  state:              string
+  country:            string
+  coordinates:        string
+  isVerified:         boolean
+  isActive:           boolean
+}
