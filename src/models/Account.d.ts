@@ -91,3 +91,20 @@ export interface PersonAccountResult {
   isVerified:         boolean
   isActive:           boolean
 }
+
+export interface BusinessAccountResult {
+  id:                 number
+  username:           string
+  name:               string
+  email:              string
+  phoneNumber:        string
+  streetAddressLine1: string
+  streetAddressLine2: string
+  zip:                string
+  city:               string
+  state:              string
+  country:            string
+  coordinates:        string
+  isVerified:         boolean
+  isActive:           boolean
+}

@@ -1,6 +1,6 @@
 import { BodyParams, Controller, Get, PathParams, Post, UseBefore } from '@tsed/common';
 import { AuthorizeRequest } from '../middlewares/AuthorizeRequest';
-import { CreateBusinessAccount, CreatePersonAccount, PersonAccountResult } from '../models/Account';
+import { BusinessAccountResult, CreateBusinessAccount, CreatePersonAccount, PersonAccountResult } from '../models/Account';
 import { AccountRole } from '../models/AccountRole';
 import { AccountService } from '../services/AccountService';
 
@@ -42,9 +42,9 @@ export class AccountController {
   }
 
   @Get('/getAllBusinessAccounts')
-  async getAllBusinessAccounts(): Promise<any> {
+  async getAllBusinessAccounts(): Promise<BusinessAccountResult[]> {
     try {
-      const accounts = await this.accountService.getAllBusinessAccounts()
+      const accounts: BusinessAccountResult[] = await this.accountService.getAllBusinessAccounts()
       return accounts
     }
     catch (e) {

@@ -3,7 +3,7 @@ import { BadRequest, NotFound, UnprocessableEntity } from "@tsed/exceptions";
 import { TypeORMService } from "@tsed/typeorm";
 import { Connection } from "typeorm";
 import { Account } from "../entity/AccountEntity";
-import { CreateBusinessAccount, CreatePersonAccount, PersonAccountResult } from "../models/Account";
+import { BusinessAccountResult, CreateBusinessAccount, CreatePersonAccount, PersonAccountResult } from "../models/Account";
 import { format } from 'date-fns'
 import { AccountRole } from "../models/AccountRole";
 
@@ -64,9 +64,9 @@ export class AccountService {
     }
   }
 
-  async getAllBusinessAccounts(): Promise<any> {
+  async getAllBusinessAccounts(): Promise<BusinessAccountResult[]> {
     try {
-      const accounts = await this.connection.query('EXECUTE Account_GetAllBusinessAccounts')
+      const accounts: BusinessAccountResult[] = await this.connection.query('EXECUTE Account_GetAllBusinessAccounts')
       if (accounts.length === 0) throw new NotFound('No accounts found.')
       return accounts
     }
