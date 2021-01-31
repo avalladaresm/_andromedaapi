@@ -43,6 +43,7 @@ const spec: Partial<OpenSpec3> = {
   swagger: [
     {
       path: "/docs",
+      specVersion: '3.0.3',
       spec: spec
     }
   ],
