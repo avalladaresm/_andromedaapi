@@ -1,5 +1,5 @@
-import {Configuration, Inject} from "@tsed/di";
-import {PlatformApplication} from "@tsed/common";
+import { Configuration, Inject } from "@tsed/di";
+import { PlatformApplication } from "@tsed/common";
 import "@tsed/platform-express"; // /!\ keep this import
 import * as bodyParser from "body-parser";
 import * as compress from "compression";
@@ -10,7 +10,24 @@ import "@tsed/ajv";
 import "@tsed/swagger";
 import "@tsed/typeorm";
 import ormconfig from './ormconfig'
+import { OpenSpec3 } from "@tsed/openspec";
+
 export const rootDir = __dirname;
+
+const spec: Partial<OpenSpec3> = {
+  components: {
+    securitySchemes: {
+      bearerAuth: {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT'
+      }
+    }
+  },
+  security: [{
+    bearerAuth: []
+  }]
+}
 
 @Configuration({
   rootDir,
@@ -20,9 +37,13 @@ export const rootDir = __dirname;
     '/':
       `${rootDir}/controllers/**/*.ts`
   },
+  componentsScan: [
+    `${rootDir}/middlewares/**/*.ts`
+  ],
   swagger: [
     {
-      path: "/docs"
+      path: "/docs",
+      spec: spec
     }
   ],
   typeorm: ormconfig,
