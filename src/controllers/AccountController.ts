@@ -5,6 +5,7 @@ import { AccountRole } from '../models/AccountRole';
 import { AccountService } from '../services/AccountService';
 
 @Controller('/account')
+@UseBefore(AuthorizeRequest)
 export class AccountController {
   constructor(private accountService: AccountService) { }
 
@@ -30,7 +31,6 @@ export class AccountController {
   }
 
   @Get('/getAllPersonAccounts')
-  @UseBefore(AuthorizeRequest)
   async getAllPersonAccounts(): Promise<PersonAccountResult[]> {
     try {
       const accounts: PersonAccountResult[] = await this.accountService.getAllPersonAccounts()
