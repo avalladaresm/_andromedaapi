@@ -1,6 +1,5 @@
-import { BodyParams, Context, Controller, Get, HeaderParams, PathParams, PlatformResponse, Post, QueryParams } from '@tsed/common';
+import { BodyParams, Context, Controller, Get, PlatformResponse, Post, QueryParams } from '@tsed/common';
 import { AccountLoginData, AccountSignupData } from '../models/Account';
-import { AccountRole } from '../models/AccountRole';
 import { VerifiedAccount } from '../models/VerifiedAccount';
 import { AuthService } from '../services/AuthService';
 
@@ -33,40 +32,9 @@ export class AuthController {
     }
   }
 
-  @Get('/:username/account-role')
-  async getAccountRole(@PathParams('username') username: string): Promise<AccountRole> {
-    try {
-      return await this.authService.getAccountRole(username)
-    }
-    catch (e) {
-      throw e
-    }
-  }
-
   @Post('/signup')
   async signup(@BodyParams('data') data: AccountSignupData) {
     const d = await this.authService.signup(data)
     return d
   }
-
-
-  @Get()
-  getToken(@HeaderParams("x-access-token") token: string): string {
-    console.log("token", token);
-
-    return token;
-  }
 }
-
-
-
-/* {
-  "data": {
-    "username": "user10",
-    "password": "mypw",
-    "email": "user10@gmail.com",
-    "name": "name10",
-    "surname": "surname10",
-    "accountTypeId": 1
-  }
-} */

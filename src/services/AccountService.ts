@@ -5,6 +5,8 @@ import { Connection } from "typeorm";
 import { Account } from "../entity/AccountEntity";
 import { CreateBusinessAccount, CreatePersonAccount, PersonAccountResult } from "../models/Account";
 import { format } from 'date-fns'
+import { AccountRole } from "../models/AccountRole";
+
 const sgMail = require('@sendgrid/mail')
 var bcrypt = require('bcrypt');
 var jwt = require('jsonwebtoken');
@@ -30,6 +32,16 @@ export class AccountService {
     return Boolean(Object.values(exists[0])[0])
   }
 
+  async getAccountRole(username: string): Promise<AccountRole> {
+    try {
+      const role = await this.connection.query('EXECUTE Account_GetAccountRole @0', [username])
+      return { role: role[0].role, accountId: role[0].id }
+    }
+    catch (e) {
+      throw e
+    }
+  }
+  
   async getAllAccounts(): Promise<any> {
     try {
       const accounts = await this.connection.query('EXECUTE Account_GetAllAccounts')
