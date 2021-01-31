@@ -32,7 +32,7 @@ const spec: Partial<OpenSpec3> = {
 @Configuration({
   rootDir,
   acceptMimes: ["application/json"],
-  port: 3000,
+  port: process.env.PORT || 3000,
   mount: {
     '/':
       `${rootDir}/controllers/**/*.ts`
