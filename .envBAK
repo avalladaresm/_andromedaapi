@@ -1,6 +1,0 @@
-TYPEORM_HOST = andromedaapi.ctbufogxpfqz.us-east-1.rds.amazonaws.com
-TYPEORM_USERNAME = alejo
-TYPEORM_PASSWORD = Iamy0urmaster1!
-TYPEORM_DATABASE = andromedadb
-MY_SUPER_SECRET=thisismyincrediblesecretsecret
-SENDGRID_API_KEY=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
