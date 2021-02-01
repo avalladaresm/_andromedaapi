@@ -54,7 +54,7 @@ const spec: Partial<OpenSpec3> = {
   rootDir,
   acceptMimes: ["application/json"],
   httpPort: process.env.PORT || 8083,
-  httpsPort: false, // CHANGE
+  httpsPort: process.env.PORT,
   logger: {
     disableRoutesSummary: isProduction
   },
@@ -67,7 +67,7 @@ const spec: Partial<OpenSpec3> = {
   ],
   swagger: [
     {
-      path: "/docs",
+      path: "/",
       specVersion: '3.0.3',
       spec: spec
     }
