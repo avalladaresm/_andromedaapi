@@ -1,18 +1,39 @@
+import { Env } from "@tsed/core";
 import { Configuration, Inject } from "@tsed/di";
-import { PlatformApplication } from "@tsed/common";
+import { $log, PlatformApplication } from "@tsed/common";
 import "@tsed/platform-express"; // /!\ keep this import
-import * as bodyParser from "body-parser";
-import * as compress from "compression";
-import * as cookieParser from "cookie-parser";
-import * as methodOverride from "method-override";
-import * as cors from "cors";
+import bodyParser from "body-parser";
+import compress from "compression";
+import cookieParser from "cookie-parser";
+import methodOverride from "method-override";
+import cors from "cors";
 import "@tsed/ajv";
 import "@tsed/swagger";
 import "@tsed/typeorm";
+import "@tsed/openspec";
 import ormconfig from './ormconfig'
 import { OpenSpec3 } from "@tsed/openspec";
 
 export const rootDir = __dirname;
+export const isProduction = process.env.NODE_ENV === Env.PROD;
+
+if (isProduction) {
+  $log.appenders.set("stdout", {
+    type: "stdout",
+    levels: ["info", "debug"],
+    layout: {
+      type: "json"
+    }
+  });
+
+  $log.appenders.set("stderr", {
+    levels: ["trace", "fatal", "error", "warn"],
+    type: "stderr",
+    layout: {
+      type: "json"
+    }
+  });
+}
 
 const spec: Partial<OpenSpec3> = {
   components: {
@@ -32,7 +53,11 @@ const spec: Partial<OpenSpec3> = {
 @Configuration({
   rootDir,
   acceptMimes: ["application/json"],
-  port: process.env.PORT || 3000,
+  httpPort: process.env.PORT || 8083,
+  httpsPort: false, // CHANGE
+  logger: {
+    disableRoutesSummary: isProduction
+  },
   mount: {
     '/':
       `${rootDir}/controllers/**/*.ts`
