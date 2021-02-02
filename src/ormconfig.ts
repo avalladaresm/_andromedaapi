@@ -12,7 +12,7 @@ const conf: ConnectionOptions = {
   synchronize: false,
   logging: false,
   entities: [
-    `${__dirname}/entity/**/*.ts`,
+    `${__dirname}/entity/**/*.{js,ts}`,
   ],
   migrations: [
     '${rootDir}/migration/**/*.ts'
