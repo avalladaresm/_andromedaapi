@@ -1,5 +1,5 @@
 import { BodyParams, Context, Controller, Get, PlatformResponse, Post, QueryParams } from '@tsed/common';
-import { Returns } from '@tsed/schema';
+import { ContentType } from '@tsed/schema';
 import { AccountLoginData, AccountSignupData } from '../models/Account';
 import { CurrentUserAuthData } from '../models/CurrentUserAuthData';
 import { VerifiedAccount } from '../models/VerifiedAccount';
@@ -10,6 +10,7 @@ export class AuthController {
   constructor(private authService: AuthService) { }
 
   @Post('/login')
+  @ContentType('application/json')
   async login(@BodyParams('data') data: AccountLoginData): Promise<CurrentUserAuthData> {
     const d = await this.authService.signin(data)
     return d
