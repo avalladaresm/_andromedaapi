@@ -1,5 +1,7 @@
 import { BodyParams, Context, Controller, Get, PlatformResponse, Post, QueryParams } from '@tsed/common';
+import { Returns } from '@tsed/schema';
 import { AccountLoginData, AccountSignupData } from '../models/Account';
+import { CurrentUserAuthData } from '../models/CurrentUserAuthData';
 import { VerifiedAccount } from '../models/VerifiedAccount';
 import { AuthService } from '../services/AuthService';
 
@@ -8,7 +10,7 @@ export class AuthController {
   constructor(private authService: AuthService) { }
 
   @Post('/login')
-  async login(@BodyParams('data') data: AccountLoginData) {
+  async login(@BodyParams('data') data: AccountLoginData): Promise<CurrentUserAuthData> {
     const d = await this.authService.signin(data)
     return d
   }

@@ -53,7 +53,7 @@ const spec: Partial<OpenSpec3> = {
 @Configuration({
   rootDir,
   acceptMimes: ["application/json"],
-  httpPort: process.env.PORT || 8083,
+  httpPort: process.env.PORT || 3000,
   httpsPort: process.env.PORT,
   logger: {
     disableRoutesSummary: isProduction

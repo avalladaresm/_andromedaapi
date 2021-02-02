@@ -6,6 +6,7 @@ import { Account } from '../entity/AccountEntity';
 import { AccountLoginData, AccountSignupData } from '../models/Account';
 import { VerifiedAccount } from '../models/VerifiedAccount';
 import { format } from 'date-fns'
+import { CurrentUserAuthData } from '../models/CurrentUserAuthData';
 
 const sgMail = require('@sendgrid/mail')
 var bcrypt = require('bcrypt');
@@ -33,7 +34,7 @@ export class AuthService {
     return Boolean(Object.values(exists[0])[0])
   }
 
-  async signin(data: AccountLoginData): Promise<string> {
+  async signin(data: AccountLoginData): Promise<CurrentUserAuthData> {
     try {
       const account = await this.connection.manager.findOne(Account, { where: { username: data.username } })
       if (!account) throw new NotFound(`Account ${data.username} not found.`);
@@ -48,7 +49,7 @@ export class AuthService {
         expiresIn: 86400 // 24 hours
       });
 
-      const loginRes = data.username + '|' + token + '|' + role[0].role + '|' + account.id
+      const loginRes: CurrentUserAuthData = { u: data.username, a_t: token, r: role[0].role, aid: account.id }
       return loginRes
     }
     catch (e) {
