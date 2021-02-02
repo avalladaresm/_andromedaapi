@@ -2,7 +2,7 @@ import { Service } from '@tsed/common';
 import { BadRequest, NotFound, Unauthorized, UnprocessableEntity } from '@tsed/exceptions';
 import { TypeORMService } from '@tsed/typeorm';
 import { Connection } from 'typeorm';
-import { Account } from '../entity/AccountEntity';
+import { Account } from '../entity/Account';
 import { AccountLoginData, AccountSignupData } from '../models/Account';
 import { VerifiedAccount } from '../models/VerifiedAccount';
 import { format } from 'date-fns'
