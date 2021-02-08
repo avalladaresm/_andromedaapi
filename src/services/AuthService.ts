@@ -7,6 +7,7 @@ import { AccountLoginData, AccountSignupData } from '../models/Account';
 import { VerifiedAccount } from '../models/VerifiedAccount';
 import { format } from 'date-fns'
 import { CurrentUserAuthData } from '../models/CurrentUserAuthData';
+import { AuthLogService } from './AuthLogService';
 
 const sgMail = require('@sendgrid/mail')
 var bcrypt = require('bcrypt');
@@ -18,7 +19,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 export class AuthService {
   private connection: Connection;
 
-  constructor(private typeORMService: TypeORMService) { }
+  constructor(private typeORMService: TypeORMService, private accountService: AuthLogService) { }
 
   $afterRoutesInit() {
     this.connection = this.typeORMService.get('default')!; // get connection by name
@@ -48,6 +49,8 @@ export class AuthService {
       var token = jwt.sign({ id: account.id }, process.env.MY_SUPER_SECRET, {
         expiresIn: 86400 // 24 hours
       });
+
+      await this.accountService.createLoginLog(account.id)
 
       const loginRes: CurrentUserAuthData = { u: data.username, a_t: token, r: role[0].role, aid: account.id }
       return loginRes
