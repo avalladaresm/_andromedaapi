@@ -1,4 +1,5 @@
 import { BodyParams, Controller, Get, PathParams, Post, UseBefore } from '@tsed/common';
+import { ContentType } from '@tsed/schema';
 import { AuthorizeRequest } from '../middlewares/AuthorizeRequest';
 import { BusinessAccountResult, CreateBusinessAccount, CreatePersonAccount, PersonAccountResult } from '../models/Account';
 import { AccountRoleResult } from '../models/AccountRole';
@@ -9,10 +10,12 @@ import { AccountService } from '../services/AccountService';
 export class AccountController {
   constructor(private accountService: AccountService) { }
 
-  @Get('/:username/account-role')
-  async getAccountRole(@PathParams('username') username: string): Promise<AccountRoleResult> {
+  @Get('/:username/account-roles')
+  @ContentType('application/json')
+  async getAccountRoles(@PathParams('username') username: string): Promise<AccountRoleResult> {
     try {
-      return await this.accountService.getAccountRole(username)
+      const d = await this.accountService.getAccountRoles(username)
+      return d
     }
     catch (e) {
       throw e

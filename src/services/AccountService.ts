@@ -32,7 +32,7 @@ export class AccountService {
     return Boolean(Object.values(exists[0])[0])
   }
 
-  async getAccountRole(username: string): Promise<AccountRoleResult> {
+  async getAccountRoles(username: string): Promise<AccountRoleResult> {
     try {
       const accountRoles = await this.connection.query('EXECUTE Account_GetAccountRole @0', [username])
       const roles = accountRoles.map((ar: AccountRole) => {
