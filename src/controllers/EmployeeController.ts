@@ -1,9 +1,11 @@
-import { BodyParams, Controller, Get, PathParams, Post} from '@tsed/common';
+import { BodyParams, Controller, Get, PathParams, Post, UseBefore} from '@tsed/common';
 import { ContentType} from '@tsed/schema';
+import { AuthorizeRequest } from '../middlewares/AuthorizeRequest';
 import { CreateEmployeeAccount, EmployeeAccountResult } from '../models/Account';
 import { EmployeeService } from '../services/EmployeeService';
 
 @Controller('/employee')
+@UseBefore(AuthorizeRequest)
 export class EmployeeController {
   constructor(private employeeService: EmployeeService) { }
 
