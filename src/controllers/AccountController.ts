@@ -1,7 +1,7 @@
 import { BodyParams, Controller, Get, PathParams, Post, UseBefore } from '@tsed/common';
 import { AuthorizeRequest } from '../middlewares/AuthorizeRequest';
 import { BusinessAccountResult, CreateBusinessAccount, CreatePersonAccount, PersonAccountResult } from '../models/Account';
-import { AccountRole } from '../models/AccountRole';
+import { AccountRoleResult } from '../models/AccountRole';
 import { AccountService } from '../services/AccountService';
 
 @Controller('/account')
@@ -10,7 +10,7 @@ export class AccountController {
   constructor(private accountService: AccountService) { }
 
   @Get('/:username/account-role')
-  async getAccountRole(@PathParams('username') username: string): Promise<AccountRole> {
+  async getAccountRole(@PathParams('username') username: string): Promise<AccountRoleResult> {
     try {
       return await this.accountService.getAccountRole(username)
     }

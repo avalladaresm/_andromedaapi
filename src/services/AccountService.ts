@@ -5,7 +5,7 @@ import { Connection } from "typeorm";
 import { Account } from "../entity/Account";
 import { BusinessAccountResult, CreateBusinessAccount, CreatePersonAccount, PersonAccountResult } from "../models/Account";
 import { format } from 'date-fns'
-import { AccountRole } from "../models/AccountRole";
+import { AccountRole, AccountRoleResult } from "../models/AccountRole";
 
 const sgMail = require('@sendgrid/mail')
 var bcrypt = require('bcrypt');
@@ -32,10 +32,13 @@ export class AccountService {
     return Boolean(Object.values(exists[0])[0])
   }
 
-  async getAccountRole(username: string): Promise<AccountRole> {
+  async getAccountRole(username: string): Promise<AccountRoleResult> {
     try {
-      const role = await this.connection.query('EXECUTE Account_GetAccountRole @0', [username])
-      return { role: role[0].role, accountId: role[0].id }
+      const accountRoles = await this.connection.query('EXECUTE Account_GetAccountRole @0', [username])
+      const roles = accountRoles.map((ar: AccountRole) => {
+        return ar.role
+      })
+      return { roles: roles, accountId: accountRoles[0].id }
     }
     catch (e) {
       throw e
