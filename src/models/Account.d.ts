@@ -108,3 +108,31 @@ export interface BusinessAccountResult {
   isVerified:         boolean
   isActive:           boolean
 }
+
+export interface EmployeeAccountResult {
+  id:                 number
+  username:           string
+  name:               string
+  surname:            string
+  gender:             string
+  dob:                string
+  position:           string
+  contractType:       string
+  salary:             number
+  hiredOn:            string
+  email:              string
+  emailType?:         string
+  phoneNumber:        string
+  phoneNumberType?:   string
+  streetAddressLine1: string
+  streetAddressLine2: string
+  zip:                string
+  city:               string
+  state:              string
+  country:            string
+  coordinates:        string
+  isVerified:         boolean
+  isActive:           boolean
+  role:               number
+  employerId:         number
+}

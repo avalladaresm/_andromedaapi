@@ -1,8 +1,8 @@
 import { Service } from "@tsed/common";
-import { BadRequest, UnprocessableEntity } from "@tsed/exceptions";
+import { BadRequest, NotFound, UnprocessableEntity } from "@tsed/exceptions";
 import { TypeORMService } from "@tsed/typeorm";
 import { Connection } from "typeorm";
-import { CreateEmployeeAccount } from "../models/Account";
+import { CreateEmployeeAccount, EmployeeAccountResult } from "../models/Account";
 
 const sgMail = require('@sendgrid/mail')
 var bcrypt = require('bcrypt');
@@ -28,17 +28,6 @@ export class EmployeeService {
     return Boolean(Object.values(exists[0])[0])
   }
 
-  /* async getAllEmployees(): Promise<any> {
-    try {
-      const accounts = await this.connection.query('EXECUTE Account_GetAllEmployees')
-      if (accounts.length === 0) throw new NotFound('No accounts found.')
-      return accounts
-    }
-    catch (e) {
-      throw e
-    }
-  } */
-
   async createEmployeeAccount(data: CreateEmployeeAccount): Promise<void> {
     const usernameExists = await this.doesAccountUsernameExists(data.username);
     if (usernameExists) {
@@ -56,7 +45,7 @@ export class EmployeeService {
       const hashedPassword = bcrypt.hashSync(data.password, 10)
       const account = await this.connection.query(createEmployeeAccountQuery,
         [data.username, hashedPassword, data.email, data.emailType, data.name, data.surname, data.gender, data.dob,
-        data.position, data.hiredOn, data.contractType, data.salary, data.employerId, data.roleId, 
+        data.position, data.hiredOn, data.contractType, data.salary, data.employerId, data.roleId,
         data.phoneNumber, data.phoneNumberType, data.streetAddress1, data.streetAddress2,
         data.cityId, data.stateId, data.countryId, data.zip, data.coordinates]
       );
@@ -82,6 +71,17 @@ export class EmployeeService {
     }
     catch (e) {
       throw e;
+    }
+  }
+
+  async getCurrentEmployerEmployees(employerId: number): Promise<EmployeeAccountResult[]> {
+    try {
+      const employees = await this.connection.query('EXECUTE Employee_GetEmployeeAccounts @0', [employerId])
+      if (employees.length === 0) throw new NotFound('No employees found.')
+      return employees
+    }
+    catch (e) {
+      throw e
     }
   }
 
