@@ -8,6 +8,7 @@ import { VerifiedAccount } from '../models/VerifiedAccount';
 import { format } from 'date-fns'
 import { CurrentUserAuthData } from '../models/CurrentUserAuthData';
 import { AuthLogService } from './AuthLogService';
+import { AuthLog } from '../models/AuthLog';
 
 const sgMail = require('@sendgrid/mail')
 var bcrypt = require('bcrypt');
@@ -50,7 +51,14 @@ export class AuthService {
         expiresIn: 86400 // 24 hours
       });
 
-      await this.accountService.createLoginLog(account.id)
+      const platform: AuthLog = {
+        ip: data.platform.ip,
+        osplatform: data.platform.osplatform,
+        browsername: data.platform.browsername,
+        browserversion: data.platform.browserversion
+      }
+      
+      await this.accountService.createLoginLog(account.id, platform)
 
       const loginRes: CurrentUserAuthData = { u: data.username, a_t: token, r: role[0].role, aid: account.id }
       return loginRes

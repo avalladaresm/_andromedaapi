@@ -1,3 +1,5 @@
+import { AuthLog } from "./AuthLog";
+
 export interface AccountSignupData {
   username:       string
   password:       string
@@ -10,6 +12,7 @@ export interface AccountSignupData {
 export interface AccountLoginData {
   username: string
   password: string
+  platform: AuthLog
 }
 
 export interface CreateBusinessAccount {
