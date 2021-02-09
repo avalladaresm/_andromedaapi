@@ -24,6 +24,7 @@
     "@tsed/swagger": "6.23.4",
     "@tsed/typeorm": "6.23.4",
     "@types/detect-browser": "^4.0.0",
+    "@types/lru-cache": "^5.1.0",
     "ajv": "^7.0.3",
     "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
