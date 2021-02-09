@@ -16,6 +16,11 @@ var jwt = require('jsonwebtoken');
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
+enum AuthType {
+  LOG_IN = 1,
+  LOG_OUT = 2
+}
+
 @Service()
 export class AuthService {
   private connection: Connection;
@@ -57,8 +62,8 @@ export class AuthService {
         browsername: data.platform.browsername,
         browserversion: data.platform.browserversion
       }
-      
-      await this.accountService.createLoginLog(account.id, platform)
+
+      await this.accountService.createAuthLog(account.id, AuthType.LOG_IN, platform)
 
       const loginRes: CurrentUserAuthData = { u: data.username, a_t: token, r: role[0].role, aid: account.id }
       return loginRes
@@ -144,6 +149,25 @@ export class AuthService {
       else {
         throw new Unauthorized('Oops. This link is no longer valid!')
       }
+    }
+    catch (e) {
+      throw e
+    }
+  }
+
+  async logout(username: string, authlog: AuthLog): Promise<void> {
+    try {
+      const account = await this.connection.manager.findOne(Account, { where: { username: username } })
+      if (!account) throw new NotFound(`Account ${username} not found.`);
+
+      const platform: AuthLog = {
+        ip: authlog.ip,
+        osplatform: authlog.osplatform,
+        browsername: authlog.browsername,
+        browserversion: authlog.browserversion
+      }
+
+      await this.accountService.createAuthLog(account.id, AuthType.LOG_OUT, platform)
     }
     catch (e) {
       throw e

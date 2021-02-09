@@ -1,6 +1,7 @@
 import { BodyParams, Context, Controller, Get, PlatformResponse, Post, QueryParams } from '@tsed/common';
 import { ContentType } from '@tsed/schema';
 import { AccountLoginData, AccountSignupData } from '../models/Account';
+import { AuthLog, LogoutAuthLog } from '../models/AuthLog';
 import { CurrentUserAuthData } from '../models/CurrentUserAuthData';
 import { VerifiedAccount } from '../models/VerifiedAccount';
 import { AuthService } from '../services/AuthService';
@@ -38,6 +39,13 @@ export class AuthController {
   @Post('/signup')
   async signup(@BodyParams('data') data: AccountSignupData) {
     const d = await this.authService.signup(data)
+    return d
+  }
+
+  @Post('/logout')
+  @ContentType('application/json')
+  async logout(@BodyParams('data') data: LogoutAuthLog): Promise<void> {
+    const d = await this.authService.logout(data.username, data.authlog)
     return d
   }
 }

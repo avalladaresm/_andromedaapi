@@ -12,10 +12,10 @@ export class AuthLogService {
     this.connection = this.typeORMService.get("default")!; // get connection by name
   }
 
-  async createLoginLog(accountId: number, platform: AuthLog): Promise<void> {
+  async createAuthLog(accountId: number, authTypeId: number, platform: AuthLog): Promise<void> {
     try {
-      await this.connection.query('EXECUTE AuthLog_CreateLoginLog @0, @1, @2, @3, @4', [
-        platform.ip, accountId, platform.osplatform, platform.browsername, platform.browserversion
+      await this.connection.query('EXECUTE AuthLog_CreateLoginLog @0, @1, @2, @3, @4, @5', [
+        platform.ip, accountId, authTypeId, platform.osplatform, platform.browsername, platform.browserversion
       ])
     }
     catch (e) {

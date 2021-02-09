@@ -4,3 +4,8 @@ export interface AuthLog {
   browsername:    string
   browserversion: string
 }
+
+export interface LogoutAuthLog{
+  username: string
+  authlog:  AuthLog
+}
