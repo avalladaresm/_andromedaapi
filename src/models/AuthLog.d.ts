@@ -18,4 +18,5 @@ export interface AuthLogResult {
   osplatform:     string
   browsername:    string
   browserversion: string
+  username:       string
 }
