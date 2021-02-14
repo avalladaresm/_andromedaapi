@@ -25,7 +25,7 @@ enum AuthType {
 export class AuthService {
   private connection: Connection;
 
-  constructor(private typeORMService: TypeORMService, private accountService: AuthLogService) { }
+  constructor(private typeORMService: TypeORMService, private authLog: AuthLogService) { }
 
   $afterRoutesInit() {
     this.connection = this.typeORMService.get('default')!; // get connection by name
@@ -63,7 +63,7 @@ export class AuthService {
         browserversion: data.platform.browserversion
       }
 
-      await this.accountService.createAuthLog(account.id, AuthType.LOG_IN, platform)
+      await this.authLog.createAuthLog(account.id, AuthType.LOG_IN, platform)
 
       const loginRes: CurrentUserAuthData = { u: data.username, a_t: token, r: role[0].role, aid: account.id }
       return loginRes
@@ -167,7 +167,7 @@ export class AuthService {
         browserversion: authlog.browserversion
       }
 
-      await this.accountService.createAuthLog(account.id, AuthType.LOG_OUT, platform)
+      await this.authLog.createAuthLog(account.id, AuthType.LOG_OUT, platform)
     }
     catch (e) {
       throw e
