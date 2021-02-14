@@ -2,7 +2,7 @@ import { Service } from "@tsed/common";
 import { NotFound } from "@tsed/exceptions";
 import { TypeORMService } from "@tsed/typeorm";
 import { Connection } from "typeorm";
-import { ActivityLogResult } from "../models/ActivityLog";
+import { ActivityLogCreate, ActivityLogResult } from "../models/ActivityLog";
 
 @Service()
 export class ActivityLogService {
@@ -18,6 +18,17 @@ export class ActivityLogService {
       const activityLogs = await this.connection.query('EXECUTE ActivityLog_GetActivityLogs')
       if (activityLogs.length === 0) throw new NotFound('No activity logs found.')
       return activityLogs
+    }
+    catch (e) {
+      throw e
+    }
+  }
+
+  async createActivityLog(data: ActivityLogCreate): Promise<void> {
+    try {
+      await this.connection.query('EXECUTE ActivityLog_CreateActivityLog @0, @1, @2, @3, @4, @5, @6, @7, @8', [
+        data.username, data.typeId, data.description, data.data, data.ip, data.osplatform, data.browsername, data.browserversion, data.accountExists
+      ])
     }
     catch (e) {
       throw e

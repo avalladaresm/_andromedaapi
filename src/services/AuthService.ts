@@ -9,6 +9,8 @@ import { format } from 'date-fns'
 import { CurrentUserAuthData } from '../models/CurrentUserAuthData';
 import { AuthLogService } from './AuthLogService';
 import { AuthLog } from '../models/AuthLog';
+import { ActivityLogService } from './ActivityLogService';
+import { ActivityLogType } from '../models/ActivityLogType';
 
 const sgMail = require('@sendgrid/mail')
 var bcrypt = require('bcrypt');
@@ -20,12 +22,11 @@ enum AuthType {
   LOG_IN = 1,
   LOG_OUT = 2
 }
-
 @Service()
 export class AuthService {
   private connection: Connection;
 
-  constructor(private typeORMService: TypeORMService, private authLog: AuthLogService) { }
+  constructor(private typeORMService: TypeORMService, private authLog: AuthLogService, private activityLog: ActivityLogService) { }
 
   $afterRoutesInit() {
     this.connection = this.typeORMService.get('default')!; // get connection by name
@@ -43,19 +44,6 @@ export class AuthService {
 
   async signin(data: AccountLoginData): Promise<CurrentUserAuthData> {
     try {
-      const account = await this.connection.manager.findOne(Account, { where: { username: data.username } })
-      if (!account) throw new NotFound(`Account ${data.username} not found.`);
-
-      const hashedPassword = bcrypt.compareSync(data.password, account?.password)
-      if (!hashedPassword) throw new Unauthorized(`Invalid password.`)
-
-      const role = await this.connection.query('EXECUTE Account_GetAccountRole @0', [data.username])
-      if (role.length === 0) throw new Unauthorized(`This account has no role. Contact support.`)
-
-      var token = jwt.sign({ id: account.id }, process.env.MY_SUPER_SECRET, {
-        expiresIn: 86400 // 24 hours
-      });
-
       const platform: AuthLog = {
         ip: data.platform.ip,
         osplatform: data.platform.osplatform,
@@ -63,6 +51,52 @@ export class AuthService {
         browserversion: data.platform.browserversion
       }
 
+      const account = await this.connection.manager.findOne(Account, { where: { username: data.username } })
+      if (!account) {
+        await this.activityLog.createActivityLog({
+          username: data.username,
+          typeId: ActivityLogType.LOG_IN_FAILED_ACCOUNT_NOT_FOUND,
+          description: `Account ${data.username} couldn't complete log in.`,
+          data: `Account ${data.username} not found.`,
+          ...platform,
+          accountExists: 0
+        })
+        throw new NotFound(`Account ${data.username} not found.`);
+      }
+
+      const hashedPassword = bcrypt.compareSync(data.password, account?.password)
+      if (!hashedPassword) {
+        await this.activityLog.createActivityLog({
+          username: data.username,
+          typeId: ActivityLogType.LOG_IN_FAILED_PASSWORD_INCORRECT,
+          description: `Account ${data.username} couldn't complete log in.`,
+          data: 'Invalid password.',
+          ...platform,
+          accountExists: 1
+        })
+        throw new Unauthorized('Invalid password.')
+      }
+
+      const role = await this.connection.query('EXECUTE Account_GetAccountRole @0', [data.username])
+      if (role.length === 0) {
+        await this.activityLog.createActivityLog({
+          username: data.username,
+          typeId: ActivityLogType.LOG_IN_FAILED_ACCOUNT_HAS_NO_ROLE,
+          description: `Account ${data.username} couldn't complete log in.`,
+          data: 'This account has no role.',
+          ...platform,
+          accountExists: 1
+        })
+        throw new Unauthorized('This account has no role. Contact support.')
+      }
+
+      var token = jwt.sign({ id: account.id }, process.env.MY_SUPER_SECRET, {
+        expiresIn: 86400 // 24 hours
+      });
+
+      await this.activityLog.createActivityLog({
+        username: data.username, typeId: ActivityLogType.LOG_IN, description: `${data.username} logged in successfully.`, data: '-', ...platform, accountExists: 1
+      })
       await this.authLog.createAuthLog(account.id, AuthType.LOG_IN, platform)
 
       const loginRes: CurrentUserAuthData = { u: data.username, a_t: token, r: role[0].role, aid: account.id }
@@ -157,9 +191,6 @@ export class AuthService {
 
   async logout(username: string, authlog: AuthLog): Promise<void> {
     try {
-      const account = await this.connection.manager.findOne(Account, { where: { username: username } })
-      if (!account) throw new NotFound(`Account ${username} not found.`);
-
       const platform: AuthLog = {
         ip: authlog.ip,
         osplatform: authlog.osplatform,
@@ -167,6 +198,27 @@ export class AuthService {
         browserversion: authlog.browserversion
       }
 
+      const account = await this.connection.manager.findOne(Account, { where: { username: username } })
+      if (!account) {
+        await this.activityLog.createActivityLog({
+          username: username,
+          typeId: ActivityLogType.LOG_OUT_FAILED_ACCOUNT_NOT_FOUND,
+          description: `Account ${username} couldn't complete log out.`,
+          data: `Account ${username} not found.`,
+          ...platform,
+          accountExists: 0
+        })
+        throw new NotFound(`Account ${username} not found.`);
+      }
+
+      await this.activityLog.createActivityLog({
+        username: username,
+        typeId: ActivityLogType.LOG_OUT, 
+        description: `${username} logged out.`, 
+        data: '-', 
+        ...platform, 
+        accountExists: 1
+      })
       await this.authLog.createAuthLog(account.id, AuthType.LOG_OUT, platform)
     }
     catch (e) {
