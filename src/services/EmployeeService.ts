@@ -2,6 +2,7 @@ import { Service } from "@tsed/common";
 import { BadRequest, NotFound, UnprocessableEntity } from "@tsed/exceptions";
 import { TypeORMService } from "@tsed/typeorm";
 import { Connection } from "typeorm";
+import { Account } from "../entity/Account";
 import { CreateEmployeeAccount, EmployeeAccountResult } from "../models/Account";
 
 const sgMail = require('@sendgrid/mail')
@@ -79,6 +80,17 @@ export class EmployeeService {
       const employees = await this.connection.query('EXECUTE Employee_GetEmployeeAccounts @0', [employerId])
       if (employees.length === 0) throw new NotFound('No employees found.')
       return employees
+    }
+    catch (e) {
+      throw e
+    }
+  }
+
+  async getCurrentEmployerId(employerUsername: string): Promise<number> {
+    try {
+      const employerAccount = await this.connection.manager.findOne(Account, { where: { username: employerUsername } })
+      if (!employerAccount) throw new NotFound(`Account ${employerUsername} not found.`);
+      return employerAccount.id
     }
     catch (e) {
       throw e

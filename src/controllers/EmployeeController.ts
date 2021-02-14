@@ -1,5 +1,5 @@
-import { BodyParams, Controller, Get, PathParams, Post, UseBefore} from '@tsed/common';
-import { ContentType} from '@tsed/schema';
+import { BodyParams, Controller, Get, PathParams, Post, UseBefore } from '@tsed/common';
+import { ContentType } from '@tsed/schema';
 import { AuthorizeRequest } from '../middlewares/AuthorizeRequest';
 import { CreateEmployeeAccount, EmployeeAccountResult } from '../models/Account';
 import { EmployeeService } from '../services/EmployeeService';
@@ -14,11 +14,18 @@ export class EmployeeController {
     const d = await this.employeeService.createEmployeeAccount(data)
     return d
   }
-  
+
   @Get('/:employerId/getCurrentEmployerEmployees')
   @ContentType('application/json')
   async getCurrentEmployerEmployees(@PathParams('employerId') employerId: number): Promise<EmployeeAccountResult[]> {
     const d = await this.employeeService.getCurrentEmployerEmployees(employerId)
     return d
+  }
+
+  @Get('/:employerUsername/getCurrentEmployerId')
+  @ContentType('application/json')
+  async getCurrentEmployerId(@PathParams('employerUsername') employerUsername: string): Promise<{ employerId: number }> {
+    const d = await this.employeeService.getCurrentEmployerId(employerUsername)
+    return { employerId: d }
   }
 }
