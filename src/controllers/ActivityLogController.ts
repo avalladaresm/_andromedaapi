@@ -22,7 +22,7 @@ export class ActivityLogController {
     }
   }
 
-  @Get('/createActivityLog')
+  @Post('/createActivityLog')
   @ContentType('application/json')
   async createActivityLog(@BodyParams('data') data: ActivityLogCreate): Promise<void> {
     try {
